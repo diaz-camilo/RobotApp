@@ -3,32 +3,37 @@ package com.diaz.models;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractRobot implements Moveable {
-
+    
     private static int idConsecutive = 1;
     private final int id;
     private int x;
     private int y;
     private Facing orientation;
-
+    
     public AbstractRobot(int x, int y, @NotNull Facing orientation) {
         this.id = idConsecutive++;
         this.x = x;
         this.y = y;
         this.orientation = orientation;
     }
-
+    
     public int getId() {
         return id;
     }
-
+    
     public int[] getCoordinates() {
         return new int[]{x, y};
     }
-
+    
     public Facing getOrientation() {
         return orientation;
     }
-
+    
+    /**
+     * gets the coordinates the robot would occupy if it was made to move. this would be to the current coordinates plus 1 in the direction the robot is facing.
+     *
+     * @return an int array where the first element [0] is the x coordinate and the second element [1] is the y coordinate.
+     */
     public int[] getNextMove() {
         int[] nextMove = getCoordinates();
         switch (this.orientation) {
@@ -47,8 +52,12 @@ public abstract class AbstractRobot implements Moveable {
         }
         return nextMove;
     }
-
-
+    
+    /**
+     * moves the robot one step in the direction it is facing.
+     *
+     * @return the new coordinates
+     */
     @Override
     public int[] move() {
         int[] newCoordinates = getNextMove();
@@ -56,10 +65,10 @@ public abstract class AbstractRobot implements Moveable {
         this.y = newCoordinates[1];
         return getCoordinates();
     }
-
-
+    
+    
     /**
-     * Turns robot to the anti-clockwise
+     * Turns robot anti-clockwise
      */
     public void turnLeft() {
         switch (this.orientation) {
@@ -76,13 +85,13 @@ public abstract class AbstractRobot implements Moveable {
                 this.orientation = Facing.SOUTH;
                 break;
         }
-
+        
     }
-
+    
     /**
      * Turns robot clockwise
      */
-    public void turnRigth() {
+    public void turnRight() {
         switch (this.orientation) {
             case NORTH:
                 this.orientation = Facing.EAST;
@@ -98,16 +107,16 @@ public abstract class AbstractRobot implements Moveable {
                 break;
         }
     }
-
+    
     /**
-     * Returns a string indicating the 'x' and 'y' coordinates of the robot along with its orientation
+     * generates a formatted string containing the robot's essential information.
      *
-     * @return
+     * @return a string indicating the robot's id, x and y coordinates and orientation
      */
     public String report() {
         return String.format("%-15sRobot %d\n%-15s(%d,%d)\n%-15s%s", "ID", this.id, "Coordinates", this.x, this.y, "Facing", this.orientation);
     }
-
+    
     @Override
     public String toString() {
         return report();
