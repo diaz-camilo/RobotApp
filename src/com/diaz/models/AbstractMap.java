@@ -94,6 +94,33 @@ public abstract class AbstractMap {
     return robot.getCoordinates();
   }
   
+  public int[] moveRobotToTheEdge(int id) throws RobotException {
+    
+    AbstractRobot robot = getRobotById(id);
+    int[] robotCoordinates = robot.getCoordinates();
+    
+    Facing orientation = robot.getOrientation();
+    
+    switch (orientation) {
+      case NORTH:
+        robotCoordinates[1] = this.yMax;
+        break;
+      case EAST:
+        robotCoordinates[0] = this.xMax;
+        break;
+      case WEST:
+        robotCoordinates[0] = this.xMin;
+        break;
+      case SOUTH:
+        robotCoordinates[1] = this.yMin;
+        break;
+    }
+    
+    robot.charge(robotCoordinates[0], robotCoordinates[1]);
+    
+    return robot.getCoordinates();
+  }
+  
   /**
    * @param id the robot id
    * @return the robot's new orientation

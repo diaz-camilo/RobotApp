@@ -56,6 +56,14 @@ class RobotImpTest {
   }
   
   @Test
+  void charge() {
+    int[] expected = {0, 0};
+    this.robot1.charge(0, 0);
+    int[] newCoordinates = robot1.getCoordinates();
+    assertArrayEquals(expected, newCoordinates);
+  }
+  
+  @Test
   void turnLeft() {
     assertEquals(Facing.NORTH, robot2.getOrientation());
     robot2.turnLeft();

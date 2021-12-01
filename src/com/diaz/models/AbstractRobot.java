@@ -2,7 +2,7 @@ package com.diaz.models;
 
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractRobot implements Moveable {
+public abstract class AbstractRobot implements Moveable, Chargable {
     
     private static int idConsecutive = 1;
     private final int id;
@@ -64,6 +64,14 @@ public abstract class AbstractRobot implements Moveable {
         this.x = newCoordinates[0];
         this.y = newCoordinates[1];
         return getCoordinates();
+    }
+    
+    @Override
+    public void charge(int x, int y) {
+        
+        this.x = x;
+        this.y = y;
+        
     }
     
     

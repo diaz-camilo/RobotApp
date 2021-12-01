@@ -11,11 +11,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Client {
-
+    
     private final Scanner scanner;
     private MapImp table;
     private int active = 1;
-
+    
     public Client() {
         this.scanner = new Scanner(System.in);
         try {
@@ -26,7 +26,7 @@ public class Client {
         }
         run();
     }
-
+    
     public Client(Scanner scanner) {
         this.scanner = scanner;
         try {
@@ -35,36 +35,36 @@ public class Client {
             write(e.getMessage());
         }
     }
-
+    
     public void run() {
         String userInput;
         do {
             Pattern pattern;
             Matcher matcher;
             MatchResult matchResult;
-
+            
             System.out.print("> ");
             userInput = this.scanner.nextLine().strip().toUpperCase();
             if (!userInput.matches("^EXIT$")) {
                 if (userInput.matches("^ROBOT (\\d+)$")) {
-
+                    
                     pattern = Pattern.compile("^ROBOT (\\d+)$");
                     pattern.matcher(userInput)
                             .results()
                             .map(x -> x.group(1))
                             .forEach(x -> activateRobot(Integer.parseInt(x)));
-
+                    
                 } else if (userInput.matches("^PLACE (-?\\d+),(-?\\d+),(EAST|WEST|NORTH|SOUTH)$")) {
-
+                    
                     pattern = Pattern.compile("PLACE (-?\\d+),(-?\\d+),(EAST|WEST|NORTH|SOUTH)");
                     matcher = pattern.matcher(userInput);
                     matcher.find();
                     matchResult = matcher.toMatchResult();
-
+                    
                     int x = Integer.parseInt(matchResult.group(1));
                     int y = Integer.parseInt(matchResult.group(2));
                     Facing facing = Facing.valueOf(matchResult.group(3));
-
+                    
                     placeRobot(x, y, facing);
                 } else if (userInput.matches("^MOVE$"))
                     moveActiveRobot();
@@ -74,16 +74,18 @@ public class Client {
                     turnActiveRobotLeft();
                 else if (userInput.matches("^REPORT$"))
                     writeActiveRobotReport();
+                else if (userInput.matches("^CHARGE$"))
+                    moveActiveRobotToTheEdge();
                 else
                     write("Invalid command");
             }
         } while (!userInput.equalsIgnoreCase("exit"));
     }
-
+    
     private void write(Object o) {
         System.out.println(o);
     }
-
+    
     public void writeActiveRobotReport() {
         try {
             write(this.table.getRobotReport(this.active));
@@ -91,7 +93,7 @@ public class Client {
             write(e.getMessage());
         }
     }
-
+    
     public void turnActiveRobotLeft() {
         try {
             this.table.robotTurnLeft(this.active);
@@ -99,7 +101,7 @@ public class Client {
             write(e.getMessage());
         }
     }
-
+    
     public void turnActiveRobotRight() {
         try {
             this.table.robotTurnRight(this.active);
@@ -107,7 +109,7 @@ public class Client {
             write(e.getMessage());
         }
     }
-
+    
     public void moveActiveRobot() {
         try {
             this.table.moveRobot(this.active);
@@ -115,7 +117,15 @@ public class Client {
             write(e.getMessage());
         }
     }
-
+    
+    public void moveActiveRobotToTheEdge() {
+        try {
+            this.table.moveRobotToTheEdge(this.active);
+        } catch (RobotException e) {
+            write(e.getMessage());
+        }
+    }
+    
     public void placeRobot(int x, int y, Facing facing) {
         int id;
         try {
@@ -127,7 +137,7 @@ public class Client {
         this.active = this.active == -1 ? 1 : this.active;
         write(String.format("ROBOT %d placed on the table at (%d,%d) facing %s", id, x, y, facing.toString()));
     }
-
+    
     public void activateRobot(int newActive) {
         if (this.table.robotExist(newActive))
             this.active = newActive;
